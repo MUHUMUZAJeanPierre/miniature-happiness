@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Course = require('./Course');
+
 
 const UserSchema = new mongoose.Schema({
   username: { 
@@ -20,9 +22,29 @@ const UserSchema = new mongoose.Schema({
     enum: ['student', 'instructor', 'admin'], 
     default: 'student' 
 },
-}, 
-{
-    timestamps: true, 
+courses: [
+    {
+      courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+      completedModules: [
+        {
+          moduleId: { type: mongoose.Schema.Types.ObjectId, ref: 'CourseModule' },
+          completedLessons: [
+            {
+              lessonId: { type: mongoose.Schema.Types.ObjectId, ref: 'CourseSubModuleSchema' },
+              completedAt: { type: Date }
+            }
+          ]
+        }
+      ],
+      quizScores: [
+        {
+          moduleId: { type: mongoose.Schema.Types.ObjectId, ref: 'CourseModule' },
+          score: { type: Number }  
+        }
+      ]
+    }
+  ]
+
 });
 
 module.exports = mongoose.model('User', UserSchema);
